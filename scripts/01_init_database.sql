@@ -1,6 +1,6 @@
 /*
 =============================================================
-FILE: init_database.sql
+FILE: 01_init_database.sql
 PROJECT: MySQL Data Warehouse
 PURPOSE:
     This script initializes the Data Warehouse environment
