@@ -12,13 +12,14 @@ Key Characteristics:
     - Truncates target tables before loading
     - Uses LOAD DATA INFILE for high-performance ingestion
     - Handles dirty data (blank values, \r, \n characters)
-    - No joins, no business rules
+    - No joins
+    - No business rules
     - No deduplication
     - No stored procedures (MySQL limitation)
 
 Execution:
     Run this script manually or via orchestration tool.
-    Ensure correct database is selected before execution.
+    Ensure MySQL secure_file_priv path is configured correctly.
 
 ===============================================================================
 */
@@ -35,11 +36,11 @@ USE bronze;
 /* ------------------------------------------------
    CRM - CUSTOMER INFORMATION
 ------------------------------------------------ */
-TRUNCATE TABLE crm_cust_info;
+TRUNCATE TABLE bronze.crm_cust_info;
 
 LOAD DATA INFILE
 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/source_crm/cust_info.csv'
-INTO TABLE crm_cust_info
+INTO TABLE bronze.crm_cust_info
 FIELDS TERMINATED BY ','
 LINES TERMINATED BY '\n'
 IGNORE 1 ROWS
@@ -69,11 +70,11 @@ SET
 /* ------------------------------------------------
    CRM - PRODUCT INFORMATION
 ------------------------------------------------ */
-TRUNCATE TABLE crm_prd_info;
+TRUNCATE TABLE bronze.crm_prd_info;
 
 LOAD DATA INFILE
 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/source_crm/prd_info.csv'
-INTO TABLE crm_prd_info
+INTO TABLE bronze.crm_prd_info
 FIELDS TERMINATED BY ','
 LINES TERMINATED BY '\n'
 IGNORE 1 ROWS
@@ -96,11 +97,17 @@ SET
         ''
     ),
     prd_start_dt = STR_TO_DATE(
-        NULLIF(REPLACE(REPLACE(TRIM(@prd_start_dt), '\r', ''), '\n', ''), ''),
+        NULLIF(
+            REPLACE(REPLACE(TRIM(@prd_start_dt), '\r', ''), '\n', ''),
+            ''
+        ),
         '%Y-%m-%d'
     ),
     prd_end_dt = STR_TO_DATE(
-        NULLIF(REPLACE(REPLACE(TRIM(@prd_end_dt), '\r', ''), '\n', ''), ''),
+        NULLIF(
+            REPLACE(REPLACE(TRIM(@prd_end_dt), '\r', ''), '\n', ''),
+            ''
+        ),
         '%Y-%m-%d'
     );
 
@@ -108,11 +115,11 @@ SET
 /* ------------------------------------------------
    CRM - SALES DETAILS
 ------------------------------------------------ */
-TRUNCATE TABLE crm_sales_details;
+TRUNCATE TABLE bronze.crm_sales_details;
 
 LOAD DATA INFILE
 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/source_crm/sales_details.csv'
-INTO TABLE crm_sales_details
+INTO TABLE bronze.crm_sales_details
 FIELDS TERMINATED BY ','
 LINES TERMINATED BY '\n'
 IGNORE 1 ROWS
@@ -132,32 +139,26 @@ SET
         REPLACE(REPLACE(TRIM(@sls_cust_id), '\r', ''), '\n', ''),
         ''
     ),
-
     sls_order_dt = NULLIF(
         REPLACE(REPLACE(TRIM(@sls_order_dt), '\r', ''), '\n', ''),
         ''
     ),
-
     sls_ship_dt = NULLIF(
         REPLACE(REPLACE(TRIM(@sls_ship_dt), '\r', ''), '\n', ''),
         ''
     ),
-
     sls_due_dt = NULLIF(
         REPLACE(REPLACE(TRIM(@sls_due_dt), '\r', ''), '\n', ''),
         ''
     ),
-
     sls_sales = NULLIF(
         REPLACE(REPLACE(TRIM(@sls_sales), '\r', ''), '\n', ''),
         ''
     ),
-
     sls_quantity = NULLIF(
         REPLACE(REPLACE(TRIM(@sls_quantity), '\r', ''), '\n', ''),
         ''
     ),
-
     sls_price = NULLIF(
         REPLACE(REPLACE(TRIM(@sls_price), '\r', ''), '\n', ''),
         ''
@@ -171,11 +172,11 @@ SET
 /* ------------------------------------------------
    ERP - LOCATION DATA
 ------------------------------------------------ */
-TRUNCATE TABLE erp_loc_a101;
+TRUNCATE TABLE bronze.erp_loc_a101;
 
 LOAD DATA INFILE
 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/source_erp/loc_a101.csv'
-INTO TABLE erp_loc_a101
+INTO TABLE bronze.erp_loc_a101
 FIELDS TERMINATED BY ','
 LINES TERMINATED BY '\n'
 IGNORE 1 ROWS
@@ -188,11 +189,11 @@ IGNORE 1 ROWS
 /* ------------------------------------------------
    ERP - CUSTOMER MASTER (AZ12)
 ------------------------------------------------ */
-TRUNCATE TABLE erp_cust_az12;
+TRUNCATE TABLE bronze.erp_cust_az12;
 
 LOAD DATA INFILE
 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/source_erp/CUST_AZ12.csv'
-INTO TABLE erp_cust_az12
+INTO TABLE bronze.erp_cust_az12
 FIELDS TERMINATED BY ','
 LINES TERMINATED BY '\n'
 IGNORE 1 ROWS
@@ -206,7 +207,6 @@ SET
         REPLACE(REPLACE(TRIM(@cid), '\r', ''), '\n', ''),
         ''
     ),
-
     bdate = STR_TO_DATE(
         NULLIF(
             REPLACE(REPLACE(TRIM(@bdate), '\r', ''), '\n', ''),
@@ -214,7 +214,6 @@ SET
         ),
         '%Y-%m-%d'
     ),
-
     gen = NULLIF(
         REPLACE(REPLACE(TRIM(@gen), '\r', ''), '\n', ''),
         ''
@@ -224,11 +223,11 @@ SET
 /* ------------------------------------------------
    ERP - PRODUCT CATEGORY
 ------------------------------------------------ */
-TRUNCATE TABLE erp_px_cat_g1v2;
+TRUNCATE TABLE bronze.erp_px_cat_g1v2;
 
 LOAD DATA INFILE
 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/source_erp/px_cat_g1v2.csv'
-INTO TABLE erp_px_cat_g1v2
+INTO TABLE bronze.erp_px_cat_g1v2
 FIELDS TERMINATED BY ','
 LINES TERMINATED BY '\n'
 IGNORE 1 ROWS
