@@ -1,4 +1,4 @@
-#  Gold Layer – Data Catalog (MySQL)
+#  Gold Layer – Data Catalog 
 
 ## Overview
 The **Gold Layer** represents the business-ready data model used for analytics and reporting.  
