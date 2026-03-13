@@ -151,7 +151,7 @@ Gold checks: referential integrity, aggregation accuracy, analytical consistency
 | Technical Columns | `dwh_<name>` | `dwh_load_date` |
 | Stored Procedures | `load_<layer>` | `load_bronze` |
 
-Full details in [`naming_conventions.md`](08_naming_conventions.md).
+Full details in [`naming_conventions.md`](docs/08_naming_conventions.md).
 
 ---
 
